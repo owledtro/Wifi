@@ -367,6 +367,7 @@ void WiFiManager::handleRoot() {
   page += "</h1>";
   page += F("<h3>WiFiManager</h3>");
   page += FPSTR(HTTP_PORTAL_OPTIONS);
+  page += FPSTR(HTTP_IMG);
   page += FPSTR(HTTP_END);
 
   server->send(200, "text/html", page);
