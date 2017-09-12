@@ -228,6 +228,7 @@ int WiFiManager::connectWifi(String ssid, String pass) {
   //check if we have ssid and pass and force those, if not, try with last saved values
   if (ssid != "") {
     WiFi.begin(ssid.c_str(), pass.c_str());
+    DEBUG_WM(WiFi.localIP());
   } else {
     if (WiFi.SSID()) {
       DEBUG_WM("Using last saved values, should be faster");
