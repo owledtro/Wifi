@@ -5,6 +5,8 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
 
+#include "FS.h"
+String arch;
 int ledPin = 13; // GPIO13
 WiFiServer server(80);
 
@@ -15,11 +17,21 @@ void setup() {
 
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, LOW);
+
+    SPIFFS.begin();
+    File f = SPIFFS.open("/test.txt", "r");
+    if (!f) {
+      Serial.println("file open failed");
+    }
+    arch = f.readStringUntil('EOF');
+    Serial.println(arch);
+    
+    
     //WiFiManager
     //Local intialization. Once its business is done, there is no need to keep it around
     WiFiManager wifiManager;
     //reset saved settings
-    wifiManager.resetSettings();
+    //wifiManager.resetSettings();
     
     //set custom ip for portal
     //wifiManager.setSTAStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
@@ -42,6 +54,8 @@ void setup() {
     Serial.print("http://");
     Serial.print(WiFi.localIP());
     Serial.println("/");
+
+    
 }
 
 void loop() {
@@ -84,6 +98,7 @@ void loop() {
   client.println(""); //  do not forget this one
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
+  client.println("<style>.c{text-align: center;} div,input{padding:5px;font-size:1em;color:#fff;background-color:#000;} input{width:95%;} body{text-align: center;font-family:verdana; background-color:#000;color:#fff;} button{border:0;border-radius:0.3rem;background-color:#E94F37;color:#fff;line-height:2.4rem;font-size:1.2rem;width:75%;} .q{float: right;width: 64px;text-align: right;}</style>");
  
   client.print("Led pin is now: ");
  
@@ -95,10 +110,16 @@ void loop() {
   client.println("<br><br>");
   client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
   client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
+  client.println("<br><br>");
+  client.println("<br><br>");
+  client.println(arch);
   client.println("</html>");
  
   delay(1);
   Serial.println("Client disonnected");
   Serial.println("");
+
+
+
     
 }
